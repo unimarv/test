@@ -1,13 +1,11 @@
+
+
 import pytest
 import requests
 
-def put_change_password_user(auth_type, auth_value, new_password):
-    # implementation of the function
-    pass
-
 @pytest.fixture
 def new_password():
-    return {"old_password": "a", "password": "new_password"}
+    return New_Password(old_password='a', password='fjhfdhhjdfghjk')
 
 def test_put_change_password_user_success(user, new_password):
     response = put_change_password_user("login", user.login, new_password)
@@ -17,17 +15,16 @@ def test_put_change_password_user_success(user, new_password):
 def test_put_change_password_user_invalid_old_password(new_password):
     auth_type = "login"
     auth_value = "user_login"
-    new_password.old_password == "invalid_old_password"
-    with pytest.raises(requests.exceptions.HTTPError):
-        put_change_password_user(auth_type, auth_value, new_password)
+    new_password.old_password = "invalid_old_password"
+    response = put_change_password_user(auth_type, auth_value, new_password)
+    assert response["status"] == "Invalid old password"
 
 def test_put_change_password_user_invalid_new_password(new_password):
     auth_type = "login"
     auth_value = "user_login"
     new_password.password = "short"  # password is too short
-    with pytest.raises(requests.exceptions.HTTPError):
-        put_change_password_user(auth_type, auth_value, new_password)
-
+    response = put_change_password_user(auth_type, auth_value, new_password)
+    assert response["status"] == "Invalid new password"
 
 
 new_password = New_Password(old_password='a', password='fjhfdhhjdfghjk')
