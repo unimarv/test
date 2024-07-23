@@ -2,7 +2,7 @@ import requests
 from classes import Login, Update_Login
 from typing import *
 
-base_url = "http://192.168.32.142:8989"
+base_url = "http://192.168.32.142:9898"
 
 
 # POST
@@ -12,7 +12,7 @@ base_url = "http://192.168.32.142:8989"
 
 def choose(function):
     if function == post_login:
-        login = Login.from_dict({"login": "admin", "password": "a"})  #admin a
+        login = Login.from_dict({"login": "cats", "password": "a"})  #admin a
         return login
     elif function == put_login:
         update_login = Update_Login.from_dict({"login": "a", "email": "a"})
@@ -34,9 +34,9 @@ def put_login(update_login) -> Tuple[int, Any]:
     return response.status_code, response.json()
 
 
-if __name__ == 'main':
-    login = choose(post_login)
-    print(post_login(login))
 
-    update_login = choose(put_login)
-    print(put_login(update_login))
+login = choose(post_login)
+print(post_login(login))
+
+update_login = choose(put_login)
+print(put_login(update_login))
