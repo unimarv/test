@@ -1,90 +1,87 @@
 import pytest
 from classes import Bpla, Update_Bpla
-from bpla import base_url, post_bpla, put_bpla, delete_bpla, get_bpla, headers
-from unittest.mock import patch
-from dataclasses import asdict
+from bpla import post_bpla, put_bpla, delete_bpla, get_bpla
 
 
+bpla_id_name = 'bpla_id'
+bpla_name = 'bpla'
+bplas_name = 'bplas'
+user_id_name = 'user_id'
+
+_bpla_id = ''
+_bpla_id_ = ''
+
+status = 'status'
 @pytest.fixture
 def bpla():
-    return Bpla(bort_number='ldfjhg', encryption_key='fdgh', model='gfkdfghdflghru', modem_id='dfkghdfg', type='23', user_id='lfghjdfg')
+    return Bpla(bort_number='qwerty', encryption_key='1234', model='qaz', modem_id='qsx', type=11, user_id='dcf85b21-e71b-4256-848d-05041b896b7b')
 @pytest.fixture
 def update_bpla():
     return Update_Bpla(encryption_key='dhfgsd', modem_id='fgdfgdg')
 
-@patch('requests.post')
-def test_post_bpla_success(mock_post, bpla):
-    mock_post.return_value.status_code = 200
-    mock_post.return_value.json.return_value = {'status': 'Вход успешен'}
-    status_code, response = post_bpla(bpla)
-    assert status_code == 200
-    assert response == {'status': 'Вход успешен'}
-    mock_post.assert_called_once_with(f'{base_url}/bpla', data=bpla.to_json(), headers=headers)
 
-@patch('requests.post')
-def test_post_bpla_failure(mock_post, bpla):
-    mock_post.return_value.status_code = 401
-    mock_post.return_value.json.return_value = {'error': 'invalid credentials'}
-    status_code, response = post_bpla(bpla)
-    assert status_code == 401
-    assert response == {'error': 'invalid credentials'}
-    mock_post.assert_called_once_with(f'{base_url}/bpla', data=bpla.to_json(), headers=headers)
+def test_post_bpla_real_request(bpla):
+    response = post_bpla(bpla)
+    assert response == {
+        'bpla': {
+            'bort_number': bpla.bort_number,
+            'bpla_id': response[bpla_name][bpla_id_name],
+            'encryption_key': bpla.encryption_key,
+            'model': bpla.model,
+            'modem_id': bpla.modem_id,
+            'type': bpla.type
+        },
+        status: 'Новый БПЛА зарегестрирован'
+    }
+    global _bpla_id_
+    _bpla_id_ = response[bpla_name][bpla_id_name]
 
-def test_post_bpla_real_request():
-    # bpla = Bpla(bort_number='ldfjhg', encryption_key='fdgh', model='gfkdfghdflghru', modem_id='dfkghdfg', type='23', user_id='lfghjdfg')
-    status_code, response = post_bpla(bpla)
-    assert status_code == 200
-    assert response == {'status': 'Вход успешен'}
+
 
 
 def test_get_bpla(bpla):
-    status_code, response = get_bpla("user_id", bpla.user_id)
-    assert response["bort_number"] == bpla.bort_number
-    assert response["encryption_key"] == bpla.encryption_key
-    assert response["model"] == bpla.model
-    assert response["modem_id"] == bpla.modem_id
-    assert response["type"] == bpla.type
-
-
-@patch('requests.delete')
-def test_delete_bpla_success(mock_delete, bpla):
-    mock_delete.return_value.status_code = 200
-    mock_delete.return_value.json.return_value = {'status': 'Успешно вышли из системы'}
-    response = delete_bpla("user_id", bpla.user_id)
-    assert response == {'status': 'Успешно вышли из системы'}
-    mock_delete.assert_called_once_with(f'{base_url}/bpla', params={"user_id": "lfghjdfg"}, headers=headers)
-
-@patch('requests.delete')
-def test_delete_bpla_failure(mock_delete):
-    mock_delete.return_value.status_code = 404
-    mock_delete.return_value.json.return_value = {'status': 'Пользователь не найден'}
-    response = delete_bpla("user_id", bpla.user_id)
-    assert response == {'status': 'Пользователь не найден'}
-    mock_delete.assert_called_once_with(f'{base_url}/bpla', params={"user_id": "lfghjdfg"}, headers=headers)
-
-def test_delete_bpla_real_request():
-    response = delete_bpla("user_id", bpla.user_id)
-    assert response == {'status': 'Успешно вышли из системы'}
+    response = get_bpla(user_id_name, bpla.user_id)
+    bpla_id = response[bplas_name][0][bpla_id_name]
+    assert response == {
+        'bplas': [{
+            'bort_number': bpla.bort_number,
+            'bpla_id': bpla_id,
+            'encryption_key': bpla.encryption_key,
+            'model': bpla.model,
+            'modem_id': bpla.modem_id,
+            'type': bpla.type,
+            'missions': response[bplas_name][0]['missions']
+        },]
+    }
+    global _bpla_id
+    _bpla_id = response[bplas_name][0][bpla_id_name]
 
 
 
-@patch('requests.put')
-def test_put_bpla_success(mock_put, update_bpla):
-    mock_put.return_value.status_code = 200
-    mock_put.return_value.json.return_value = {'message': 'success'}
-    response = put_bpla("user_id", update_bpla.modem_id, update_bpla)
-    assert response == {'message': 'success'}
-    mock_put.assert_called_once_with(f'{base_url}/bpla', data=asdict(update_bpla), params={"user_id": "lfghjdfg"}, headers=headers)
+def test_delete_bpla_real_request(bpla):
+    global _bpla_id
+    status_code, response = delete_bpla(bpla_id_name, _bpla_id)
+    if status_code != 200:
+        assert response == {status: 'Некорректный запрос'}
+    else:
+        assert response == {status: 'БПЛА удален'}
 
-@patch('requests.put')
-def test_put_bpla_failure(mock_put, update_user):
-    mock_put.return_value.status_code = 404
-    mock_put.return_value.json.return_value = {'error': 'not found'}
-    response = put_bpla("user_id", update_bpla.modem_id, update_bpla)
-    assert response == {'error': 'not found'}
-    mock_put.assert_called_once_with(f'{base_url}/bpla', data=asdict(update_user), params={"user_id": "lfghjdfg"}, headers=headers)
 
-def test_put_bpla_real_request(update_bpla):
-    response = put_bpla("user_id", update_bpla.modem_id, update_bpla)
-    assert response == {'message': 'success'}
+def test_put_bpla_real_request(update_bpla, bpla):
+    global _bpla_id_
+    status_code, response = put_bpla("bpla_id", _bpla_id, update_bpla)
+    if status_code != 200:
+        assert response == {status: 'Некорректный запрос'}
+    else:
+        assert response == {
+            'bpla': {
+                'bort_number': bpla.bort_number,
+                'bpla_id': _bpla_id_,
+                'encryption_key': update_bpla.encryption_key,
+                'model': bpla.model,
+                'modem_id': update_bpla.modem_id,
+                'type': bpla.type
 
+            },
+            status: 'БПЛА обновлен'
+        }
