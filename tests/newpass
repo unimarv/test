@@ -9,23 +9,32 @@ def put_change_password_user(auth_type, auth_value, new_password):
 def new_password():
     return {"old_password": "a", "password": "new_password"}
 
-def test_put_change_password_user_success(new_password):
-    auth_type = "login"
-    auth_value = "user_login"
-    response = put_change_password_user(auth_type, auth_value, new_password)
-    assert response.status_code == 200
-    assert response.json()["status"] == "Password changed successfully"
+def test_put_change_password_user_success(user, new_password):
+    response = put_change_password_user("login", user.login, new_password)
+    assert list(map(itemgetter(0), response.items()))[0] == 'status'
+    assert response["status"] == 'Пароль должен быть как минимум из 8 символов,\nсодержать строчную и заглавную букву,\nцифру, а так же спецсимвол'
 
 def test_put_change_password_user_invalid_old_password(new_password):
     auth_type = "login"
     auth_value = "user_login"
-    new_password["old_password"] = "invalid_old_password"
+    new_password.old_password == "invalid_old_password"
     with pytest.raises(requests.exceptions.HTTPError):
         put_change_password_user(auth_type, auth_value, new_password)
 
 def test_put_change_password_user_invalid_new_password(new_password):
     auth_type = "login"
     auth_value = "user_login"
-    new_password["password"] = "short"  # password is too short
+    new_password.password = "short"  # password is too short
     with pytest.raises(requests.exceptions.HTTPError):
         put_change_password_user(auth_type, auth_value, new_password)
+
+
+
+new_password = New_Password(old_password='a', password='fjhfdhhjdfghjk')
+
+    def test_put_change_password_user_invalid_old_password(new_password):
+        auth_type = "login"
+        auth_value = "user_login"
+        new_password.old_password == "invalid_old_password"
+>       with pytest.raises(requests.exceptions.HTTPError):
+E       Failed: DID NOT RAISE <class 'requests.exceptions.HTTPError'>
