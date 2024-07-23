@@ -16,7 +16,7 @@ def waypoints():
 def flight(waypoints):
     return Flight(bpla_id=bpla_id_figures, waypoints=[waypoints])
 
-def test_post_flight_real_request(waypoints, flight):
+def test_post_flight_real_request(waypoints, flight): # разместить полетное задание
     status_code, response = post_flight(flight)
     if status_code == 201:
         assert response == {
@@ -26,16 +26,16 @@ def test_post_flight_real_request(waypoints, flight):
         assert response == {status: uncorrect}
 
 
-def test_delete_flight_real_request(waypoints, flight):
+def test_delete_flight_real_request(waypoints, flight): # удаление полётного задания
     response = delete_flight(bpla_id_name, flight.bpla_id)
     assert response == {status: uncorrect}
 
 
-def test_put_flight_real_request(flight, waypoints):
+def test_put_flight_real_request(flight, waypoints): # начать полётное задание
     response = put_flight(bpla_id_name, flight.bpla_id)
     assert response == {status: uncorrect}
 
 
-def test_get_flight_real_request(flight, waypoints):
+def test_get_flight_real_request(flight, waypoints): # получить полётное задание
     response = get_flight(bpla_id_name, flight.bpla_id)
     assert response == {status: uncorrect}
