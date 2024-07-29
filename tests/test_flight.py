@@ -9,11 +9,11 @@ bpla_id_name = "bpla_id"
 uncorrect = 'Некорректный запрос'
 
 @pytest.fixture
-def waypoints():
+def waypoints(): #функция берёт ключи из класса Waypoints
     return Waypoints(latitude=123, longitude=456, altitude=789, airspeed=10.5, groundspeed=20.5, distance=30.5, heading=45, param1=1.2, param2=3.4, param3=5.6, param=7.8, svp_id="3ed0c33b-c5a4-4cc1-ac1a-370637c2e443", can_switch_svp=True, switched_svp=False, svp_new_id="edce7400-a359-4866-9477-e324091d2d3a", unix_timestmp=1643723400)
 
 @pytest.fixture
-def flight(waypoints):
+def flight(waypoints): # функция берёт ключи из класса Flight
     return Flight(bpla_id=bpla_id_figures, waypoints=[waypoints])
 
 def test_post_flight_real_request(waypoints, flight): # разместить полетное задание
