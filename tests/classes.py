@@ -1,3 +1,4 @@
+# код, в котором в объявлены все классы 
 from dataclasses import *
 from dataclasses_json import *
 
@@ -15,7 +16,7 @@ class Update_Login:
 	login: str
 	email: str
 
-l = Login("dhgdflgj", "dfghdghdf")
+# l = Login("dhgdflgj", "dfghdghdf")
 
 #  USER
 @dataclass_json
