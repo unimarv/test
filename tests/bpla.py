@@ -27,7 +27,7 @@ def get_bpla(qkey, qvalue) -> Any: # получаем данные про бпл
 	response = requests.get(f"{base_url}/bpla", params=paylaod, headers=headers)
 	return  response.json()
 
-def choose_bpla(function) -> Any: #
+def choose_bpla(function) -> Any: # функция нужна если код запускается напрямую, тогда мы будем вводить только данные только той функции, которую будем выводить через print()
 	if function == post_bpla:
 		bpla = Bpla.from_dict({"bort_number":'ldfjhg', "encryption_key":'fdgh', "model":'gfkdfghdflghru', "modem_id":'dfkghdfg', "type": 23, "user_id":'dcf85b21-e71b-4256-848d-05041b896b7b'})
 		return bpla
