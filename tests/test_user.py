@@ -25,14 +25,9 @@ def user(): # функция, которая берёт ключи из клас
 def update_user(): # функция, которая берёт ключи из класса Update_User и присваивает им значения
     return Update_User(company='dhfgsd', login='catss', email='fgyhdfkgh@fg.ru', rank='fkhg')
 
-
 @pytest.fixture
 def new_password(): # функция, которая берёт ключи из класса New_Password и присваивает им значения
     return New_Password(old_password="f", password="j")
-
-def update_login(): # функция, которая берёт ключи из класса Update_Login и присваивает им значения
-    return Update_Login(login='dhfgsd', email='slfflkgjs@gfgf.ru')
-
 
 def test_post_user_short_login(user):  # логин должен быть длиннее 4х символов
     headers = {'Authorization': f'Bearer {non_token_admin}'}
