@@ -75,7 +75,6 @@ def test_put_flight_real_request(flight, waypoints): # начать полётн
     global mission_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = put_flight(modem_id_name, modem_id, headers=headers)
-    print(f"Response: {response}, Status Code: {status_code}")
     assert status_code == 200
     assert response == {status: 'Подключение к БВС установлено'}
 
