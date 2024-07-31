@@ -9,7 +9,7 @@ mission_id_name = "mission_id"
 modem_id_name = "modem_id"
 
 svp_id = "fadc262d-75ef-4921-83ee-6437734bf929"
-non_token_admin = ttoken()[0]
+non_token_admin = ttoken()[1]
 mission_id = ""
 modem_id = "1db55e6d-7251-437c-b3d4-87d0a4d3f06e"
 
@@ -72,7 +72,6 @@ def test_put_flight_unauthorized(flight, waypoints): # начать полётн
 
 
 def test_put_flight_real_request(flight, waypoints): # начать полётное задание
-    global mission_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = put_flight(modem_id_name, modem_id, headers=headers)
     assert status_code == 200
@@ -80,7 +79,8 @@ def test_put_flight_real_request(flight, waypoints): # начать полётн
 
 
 def test_delete_flight_unauthorized(flight, waypoints):
-    status_code, response = delete_flight(mission_id_name, flight.bpla_id, headers=None)
+    global mission_id
+    status_code, response = delete_flight(mission_id_name, mission_id, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
