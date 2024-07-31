@@ -11,12 +11,12 @@ statuscode = 'status_code'
 
 notenough = 'Недостаточно прав'
 uncorrect = 'Некорректный запрос'
-needauthorization = "Требуется авторизация"
+needauthorization = 'Требуется авторизация'
 success = 'Вход выполнен успешно'
 notfound = 'Пользователь не найден'
 
 
-invalid = "aSdqqw@3"
+invalid = "aSdqq3!0"
 short = "short"
 incorrect = "aa"
 updatepassword = "aSdqqw!0"
@@ -38,9 +38,8 @@ def new_password(): # функция, которая берёт ключи из 
     return New_Password(old_password="aSdqqw!0", password="aSdqqw!20")
 
 @pytest.fixture
-def old_password(): # функция, которая берёт ключи из класса New_Password и присваивает им значения
+def oldpassword(): # функция, которая берёт ключи из класса New_Password и присваивает им значения
     return New_Password(old_password="aSdqqw!20", password="aSdqqw!0")
-
 
 
 def test_post_user_short_login(user):  # логин должен быть длиннее 4х символов
@@ -127,23 +126,22 @@ def test_get_user(user):  # получение данных пользовате
             'user_id': response.get('user_id')
     }
 
-
 def test_get_all_users_unauthorized():  # требуется токен
     response, status_code = get_all_users(headers={'Authorization': None})
     assert status_code == 401
-    assert response == {status: 'Требуется авторизация'}
+    assert response == {status: needauthorization}
 
 def test_get_all_users_forbidden_no_admin():  # недостаточно прав (не админ)
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     response, status_code = get_all_users(headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_get_all_users_without_admin(): #получение данных всех пользователей#
     headers = {'Authorization': f'Bearer {non_token_admin}'}#
     response, status_code = get_all_users(headers=headers)#
     assert status_code == 403#
-    assert response == {status: 'Недостаточно прав'}#
+    assert response == {status: notenough}#
 
 def test_get_all_users(): #получение данных всех пользователей
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -151,34 +149,16 @@ def test_get_all_users(): #получение данных всех пользо
     assert status_code == 200
     assert list(response)
 
-# def test_delete_user_unauthorized(user):  # требуется токен
-#     response, status_code = get_delete_user(login, user.login, headers={})
-#     assert status_code == 401
-#     assert response == {status: 'Требуется авторизация'}
-#
-# def test_delete_user_real_request(user): #удаление пользователя
-#     headers = {'Authorization': f'Bearer {non_token_admin}'}
-#     response, status_code = get_delete_user(login, user.login, headers=headers)
-#     assert status_code == 403
-#     assert response == {status: notenough}
-#
-# def test_delete_user(user): #получение данных всех пользователей
-#     headers = {'Authorization': f'Bearer {tokenad}'}
-#     response, status_code = get_delete_user(login, user.login, headers=headers)
-#     assert status_code == 200
-#     assert response == {status: "Пользователь уадлён"}
-
-
 def test_put_user_unauthorized(update_user):  # требуется токен
     response, status_code = put_user(login, update_user.login, update_user, headers={})
     assert status_code == 401
-    assert response == {status: 'Требуется авторизация'}
+    assert response == {status: needauthorization}
 
 def test_put_user_forbidden_no_admin(update_user):  # недостаточно прав (не админ)
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_short_login(update_user):  # логин должен быть длиннее 4х символов
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -192,7 +172,7 @@ def test_put_user_short_login(update_user):  # логин должен быть 
     update_user.login = 'catss'
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_invalid_email(update_user):  # неправильный адрес электронной почты
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -206,7 +186,7 @@ def test_put_user_invalid_email(update_user):  # неправильный адр
     update_user.email = 'canmail.ru'
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_invalid_password(update_user):  # неправильный пароль
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -222,7 +202,7 @@ def test_put_user_invalid_password(update_user):  # неправильный п�
     update_user.password = '1234567'
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_empty_rank(update_user):  # неправильное название должности (пустое)
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -236,7 +216,7 @@ def test_put_user_empty_rank(update_user):  # неправильное назв�
     update_user.rank = ''
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_empty_company(update_user):  # неправильное название компании (пустое)
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -250,7 +230,7 @@ def test_put_user_empty_company(update_user):  # неправильное наз
     update_user.company = ''
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_existing_login(update_user):  # пользователь с таким именем уже существует
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -264,7 +244,7 @@ def test_put_user_existing_login(update_user):  # пользователь с т
     update_user.login = "cats"
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_existing_email(update_user):  # пользователь с такой электронной почтой уже существует
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -278,7 +258,7 @@ def test_put_user_existing_email(update_user):  # пользователь с т
     update_user.email = 'can@mail.ru'
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_user_real_request(update_user): # запрос на регистрацию, данные менять в функции user
     headers = {'Authorization': f'Bearer {tokenad}'}
@@ -290,18 +270,19 @@ def test_put_user_real_request(update_user): # запрос на регистр�
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     response, status_code = put_user(login, update_user.login, update_user, headers=headers)
     assert status_code == 403
-    assert response == {status: 'Недостаточно прав'}
+    assert response == {status: notenough}
 
 def test_put_change_password_user_unauthorized(user, new_password):  # требуется токен
     response, status_code = put_user(login, user.login, new_password, headers=None)
     assert status_code == 401
-    assert response == {status: 'Требуется авторизация'}
-
+    assert response == {status: needauthorization}
 
 def test_put_change_password_user_invalid_old_password(user, new_password): #изменения пароля с неверным старым паролем
-    headers = {'Authorization': f'Bearer {tokenad}'}
+    headers = {'Authorization': f'Bearer {non_token_admin}'}
     new_password.old_password = invalid
     response, status_code = put_change_password_user(login, user.login, new_password, headers=headers)
+    print(f"Response: {response}")
+    print(f"Status Code: {status_code}")
     assert status_code == 400
     assert response == {status: 'Пароли не совпадают'}
 
@@ -315,7 +296,7 @@ def test_put_change_password_user_invalid_new_password(user, new_password): #п�
            'букву, цифру, а так же спецсимвол'}
 
 def test_put_change_password_user_incorrect_new_password(user, new_password): #проверка что новый пароль неверный
-    headers = {'Authorization': f'Bearer {tokenad}'}
+    headers = {'Authorization': f'Bearer {non_token_admin}'}
     new_password.password = incorrect
     response, status_code = put_change_password_user(login, user.login, new_password, headers=headers)
     assert status_code == 400
@@ -323,11 +304,30 @@ def test_put_change_password_user_incorrect_new_password(user, new_password): #�
            'символов, содержать строчную и заглавную\n'
            'букву, цифру, а так же спецсимвол'}
 
-def test_put_change_password_user_success(user, new_password, old_password): #успешное изменение пароля пользователя
+def test_put_change_password_user_success(user, new_password, oldpassword): #успешное изменение пароля пользователя
     headers = {'Authorization': f'Bearer {tokenad}'}
     response, status_code = put_change_password_user(login, user.login, new_password, headers=headers)
+    print(f"Response: {response}")
+    print(f"Status Code: {status_code}")
     assert status_code == 200
     assert response == {status: 'Пользователь обновлен'}
-    put_change_password_user(login, user.login, old_password, headers=headers)
+    put_change_password_user(login, user.login, oldpassword, headers=headers)
     assert status_code == 200
     assert response == {status: 'Пользователь обновлен'}
+
+def test_delete_user_unauthorized(user):  # требуется токен
+    response, status_code = get_delete_user(login, user.login, headers=None)
+    assert status_code == 401
+    assert response == {status: needauthorization}
+
+def test_delete_user_real_request(user): #удаление пользователя
+    headers = {'Authorization': f'Bearer {non_token_admin}'}
+    response, status_code = get_delete_user(login, user.login, headers=headers)
+    assert status_code == 403
+    assert response == {status: notenough}
+
+def test_delete_user(user): #получение данных всех пользователей
+    headers = {'Authorization': f'Bearer {tokenad}'}
+    response, status_code = get_delete_user(login, user.login, headers=headers)
+    assert status_code == 200
+    assert response == {status: "Пользователь удален"}
