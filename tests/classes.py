@@ -1,4 +1,3 @@
-# код, в котором в объявлены все классы 
 from dataclasses import *
 from dataclasses_json import *
 
@@ -7,6 +6,7 @@ from dataclasses_json import *
 @dataclass
 class Login:
 	login: str
+	email: str
 	password: str
 
 
@@ -16,7 +16,6 @@ class Update_Login:
 	login: str
 	email: str
 
-# l = Login("dhgdflgj", "dfghdghdf")
 
 #  USER
 @dataclass_json
@@ -90,8 +89,3 @@ class Waypoints:
 class Flight:
 	bpla_id: str
 	waypoints: list[Waypoints]
-
-
-# f = Flight("asd", Waypoints(10, 20, 30, 40.5, 50.5, 60.5, 70, 80.5, 90.5,100.5, 110.5,"svp_id_1", True,False, "svp_new_id_1", 123456789))
-#
-# print(f)
