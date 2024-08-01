@@ -2,6 +2,7 @@ import pytest
 from classes import Bpla, Update_Bpla
 from bpla import post_bpla, put_bpla, delete_bpla, get_bpla
 from tok import *
+from typing import *
 
 bpla_id_name = 'bpla_id'
 bpla_name = 'bpla'
@@ -22,12 +23,12 @@ def bpla(): # функция, которая берёт ключи из клас
 def update_bpla(): # функция, которая берёт ключи из класса Update_Bpla
     return Update_Bpla(encryption_key='dhfgsd', modem_id='fgdfgdg')
 
-def test_post_bpla_unauthorized(bpla):
+def test_post_bpla_unauthorized(bpla) -> Tuple[Any, Any]:
     status_code, response = post_bpla(bpla, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
-def test_post_bpla_real_request(bpla): # регистрация БПЛА
+def test_post_bpla_real_request(bpla) -> Tuple[Any, Any]: # регистрация БПЛА
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = post_bpla(bpla, headers=headers)
     print(f"Response: {response},Status Code: {status_code}")
@@ -45,19 +46,19 @@ def test_post_bpla_real_request(bpla): # регистрация БПЛА
     global _bpla_id
     _bpla_id = response[bpla_name][bpla_id_name]
 
-def test_get_bpla_unauthorized(bpla):
+def test_get_bpla_unauthorized(bpla) -> Tuple[Any, Any]:
     status_code, response = get_bpla(user_id_name, bpla.user_id, headers=None)
     assert status_code == 401
     assert response == {status:"Требуется авторизация"}
 
-def test_get_bpla_not_found(bpla):
+def test_get_bpla_not_found(bpla) -> Tuple[Any, Any]:
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = get_bpla(user_id_name, unknown_user_id_input, headers=headers)
     print(f"Response: {response},Status Code: {status_code}")
     assert status_code == 404
     assert response == {status: "БПЛА не найден"}
 
-def test_get_bpla(bpla): # функция получения данных БПЛА пользователя
+def test_get_bpla(bpla) -> Tuple[Any, Any]: # функция получения данных БПЛА пользователя
     global bpla_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = get_bpla(user_id_name, bpla.user_id, headers=headers)
@@ -75,13 +76,13 @@ def test_get_bpla(bpla): # функция получения данных БПЛ
         },]
     }
 
-def test_put_bpla_unauthorized(update_bpla, bpla):
+def test_put_bpla_unauthorized(update_bpla, bpla) -> Tuple[Any, Any]:
     global _bpla_id
     status_code, response = put_bpla("bpla_id", _bpla_id, update_bpla, headers=None)
     assert status_code == 401
     assert response == {status:"Требуется авторизация"}
 
-def test_put_bpla_not_found(update_bpla):
+def test_put_bpla_not_found(update_bpla) -> Tuple[Any, Any]:
     global _bpla_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = put_bpla(bpla_id_name, unknown_bpla_id, update_bpla, headers=headers)
@@ -90,7 +91,7 @@ def test_put_bpla_not_found(update_bpla):
     assert response == {status: "Некорректный запрос"}
 
 
-def test_put_bpla_real_request(update_bpla, bpla): # функция для обновления БПЛА
+def test_put_bpla_real_request(update_bpla, bpla) -> Tuple[Any, Any]: # функция для обновления БПЛА
     global _bpla_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = put_bpla(bpla_id_name, _bpla_id, update_bpla, headers=headers)
@@ -108,12 +109,12 @@ def test_put_bpla_real_request(update_bpla, bpla): # функция для об�
         status: 'БПЛА обновлен'
         }
 
-def test_delete_bpla_unauthorized(bpla):
+def test_delete_bpla_unauthorized(bpla) -> Tuple[Any, Any]:
     status_code, response = delete_bpla(bpla_id_name, bpla_id, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
-def test_delete_bpla_real_request(bpla):  # функция удаления БПЛА
+def test_delete_bpla_real_request(bpla) -> Tuple[Any, Any]:  # функция удаления БПЛА
     global bpla_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = delete_bpla(bpla_id_name, bpla_id, headers=headers)
