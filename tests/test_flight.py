@@ -2,6 +2,7 @@ import pytest
 from classes import Waypoints, Flight
 from flight import *
 from tok import *
+from typing import *
 
 status = 'status'
 bpla_id_figures = "f395bce2-be36-4343-a752-f28d082fc1f0"
@@ -21,14 +22,12 @@ def waypoints():
 def flight(waypoints):
     return Flight(bpla_id=bpla_id_figures, waypoints=[waypoints])
 
-
-def test_post_flight_unauthorized(flight, waypoints):
+def test_post_flight_unauthorized(flight, waypoints) -> Tuple[Any, Any]:
     status_code, response = post_flight(flight, headers=None)
     assert status_code == 401
     assert response == {status:"Требуется авторизация"}
 
-
-def test_post_flight_real_request(waypoints, flight): # размещение полетного задания
+def test_post_flight_real_request(waypoints, flight) -> Tuple[Any, Any]: # размещение полетного задания
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = post_flight(flight, headers=headers)
     assert status_code == 201
@@ -38,14 +37,13 @@ def test_post_flight_real_request(waypoints, flight): # размещение п�
     global mission_id
     mission_id = response['mission_id']
 
-
-def test_get_flight_unauthorized(flight, waypoints): # начать полётное задание
+def test_get_flight_unauthorized(flight, waypoints) -> Tuple[Any, Any]: # начать полётное задание
     global mission_id
     status_code, response = get_flight(mission_id_name, mission_id, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
-def test_get_flight_real_request(flight, waypoints): # получить полётное задание
+def test_get_flight_real_request(flight, waypoints) -> Tuple[Any, Any]: # получить полётное задание
     global mission_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = get_flight(mission_id_name, mission_id, headers=headers)
@@ -64,27 +62,25 @@ def test_get_flight_real_request(flight, waypoints): # получить полё
                                         'unix_timestmp': waypoints.unix_timestmp}]}
 
 
-def test_put_flight_unauthorized(flight, waypoints): # начать полётное задание
+def test_put_flight_unauthorized(flight, waypoints) -> Tuple[Any, Any]: # начать полётное задание
     global mission_id
     status_code, response = put_flight(modem_id_name, modem_id, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
-
-def test_put_flight_real_request(flight, waypoints): # начать полётное задание
+def test_put_flight_real_request(flight, waypoints) -> Tuple[Any, Any]: # начать полётное задание
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = put_flight(modem_id_name, modem_id, headers=headers)
     assert status_code == 200
     assert response == {status: 'Подключение к БВС установлено'}
 
-
-def test_delete_flight_unauthorized(flight, waypoints):
+def test_delete_flight_unauthorized(flight, waypoints) -> Tuple[Any, Any]:
     global mission_id
     status_code, response = delete_flight(mission_id_name, mission_id, headers=None)
     assert status_code == 401
     assert response == {status: "Требуется авторизация"}
 
-def test_delete_flight_real_request(waypoints, flight): # удаление полётного задания
+def test_delete_flight_real_request(waypoints, flight) -> Tuple[Any, Any]: # удаление полётного задания
     global mission_id
     headers = {'Authorization': f'Bearer {non_token_admin}'}
     status_code, response = delete_flight(mission_id_name, mission_id, headers=headers)
