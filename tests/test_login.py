@@ -1,6 +1,7 @@
 import pytest
 from classes import Login, Update_Login
 from login import post_login, delete_login, put_login
+from typing import *
 
 
 login_input = "input"
@@ -15,20 +16,20 @@ def login(): # функция, которая берёт ключи из кла�
 def update_login(): # функция, которая берёт ключи из класса Update_Login и присваивает им значения
     return Update_Login(login='dhfgsd', email='slfflkgjs@gfgf.ru')
 
-def test_post_login_not_found(login):
+def test_post_login_not_found(login) -> Tuple[Any, Any]:
     login.login = login_input
     login.email = email_input
     status_code, response = post_login(login)
     assert status_code == 404
     assert response == {'status': 'Пользователь не найден'}
 
-def test_post_login_wrong_password(login):
+def test_post_login_wrong_password(login) -> Tuple[Any, Any]:
     login.password = password_input
     status_code, response = post_login(login)
     assert status_code == 400
     assert response == {'status': "Не удалось войти"}
 
-def test_post_login_real_request(login): # функция, которая проверяет вход пользователя и получает данные о нём
+def test_post_login_real_request(login) -> Tuple[Any, Any]: # функция, которая проверяет вход пользователя и получает данные о нём
     status_code, response = post_login(login)
     assert status_code == 200
     assert response == {
@@ -52,12 +53,12 @@ def test_post_login_real_request(login): # функция, которая про
 #     assert status_code == 403
 #     assert response == {'status': 'Подтвердите регистрацию аккаунта по указанному адресу электронной почты'}
 
-def test_delete_login_real_request(): # функция выхода/удаления пользователя
+def test_delete_login_real_request() -> Any: # функция выхода/удаления пользователя
     response = delete_login()
     assert response == {'status': 'Успешно вышли из системы'}
 
 
-def test_put_login_real_request(update_login): # восстановление аккаунта пользователя по логину
+def test_put_login_real_request(update_login) -> Tuple[Any, Any]: # восстановление аккаунта пользователя по логину
     update_login.login = "login_input"
     status_code, response = put_login(update_login)
     assert status_code == 404
